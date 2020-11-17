@@ -14,8 +14,10 @@ class CreateSubscriptionsTable extends Migration
     public function up()
     {
         Schema::create('subscriptions', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');;
             $table->text("subscribe_id");
+            $table->text("action");
+            $table->text("result");
             $table->timestamps();
         });
     }
