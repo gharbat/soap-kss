@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Subscription;
 use Auth;
+use SimpleXMLElement;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Carbon\Carbon;
 
@@ -47,8 +48,13 @@ class SubscriptionController extends Controller
      */
     public function activate()
     {
+//        date_default_timezone_set('America/Los_Angeles');
+
+
         $uuid = $this->sub_id();
-        $timestamp = Carbon::now()->addDays(2)->addHours(6);
+        $timestamp = Carbon::now()->toIso8601String();
+        $end= Carbon::now()->addYear()->toIso8601String();
+
         $subscripID = $this->sub_id();
         $username = env("KSS_NAME", "Asiacell_SMT_1309");
         $password = env("KSS_PASSWORD", "smt@123SMT!@#$%^");
@@ -87,7 +93,14 @@ class SubscriptionController extends Controller
             $subscription->save();
 
 
-            dd($response);
+            $xml = simplexml_load_string($response, "SimpleXMLElement", LIBXML_NOCDATA);
+            $json = json_encode($xml);
+            $array = json_decode($json,TRUE);
+            echo "<pre>";
+            var_dump($response);
+            var_dump($xml);
+            echo "</pre>";
+
         } catch (HttpException $e) {
             var_dump("Error In PHP Request");
         }
@@ -98,7 +111,7 @@ class SubscriptionController extends Controller
      */
     public function sub_id()
     {
-        return Auth::user()->subscriber_id;
+        return "Auth::user()->subscriber_id";
     }
 
     /**
